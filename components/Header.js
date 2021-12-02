@@ -13,7 +13,7 @@ import { Menu } from "@material-ui/icons";
 export default function Header({ title }) {
   return (
     <Box sx={{ flexGrow: 1 }} position="relative"  >
-      <AppBar>
+      <AppBar position="relative">
         <Toolbar>
           <IconButton size="medium" sx={{ mr: 100 }}>
             <Menu fontSize="large" />
@@ -22,7 +22,7 @@ export default function Header({ title }) {
             <ListItem>{title}</ListItem>
           </List>
         </Toolbar>
-        <Drawer>
+        <Drawer open={false}>
           <p>Content</p>
         </Drawer>
       </AppBar>

@@ -16,18 +16,27 @@ export default function Home() {
       <Header title="White's Planner" />
       <main className={styles.main}>
         <Box
-          className={styles.box}
           sx={{
+            width: "100%",
+            height: '100%',
             px: 8,
             py: 15,
             border: "1px dashed grey",
             display: "flex",
-            flexGrow: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          <Paper sx={{
-            height: 'auto'
-          }}>
+          <Paper
+            sx={{
+              height: "100%",
+              py: 3,
+              px: 2,
+              width: "100%",
+              flexGrow: 1
+            }}
+            variant='outlined'
+          >
             <p className="description">
               Get started by editing <code>pages/index.js</code>
             </p>
