@@ -1,0 +1,20 @@
+type Planner {
+    
+}
+
+type Class {
+
+}
+
+type Assignment {
+
+}
+
+type Board {
+
+}
+
+type User {
+
+}
+
