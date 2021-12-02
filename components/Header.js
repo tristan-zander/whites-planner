@@ -20,7 +20,9 @@ export default function Header({ title }) {
           </IconButton>
           <List>
             <ListItem>
-              <Typography variant="h5" fontWeight="bold" >{title}</Typography>
+              <Typography variant="h5" fontWeight="bold">
+                {title}
+              </Typography>
             </ListItem>
           </List>
         </Toolbar>
