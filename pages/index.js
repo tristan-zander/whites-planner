@@ -1,23 +1,40 @@
-import Head from 'next/head'
-import Header from '@components/Header'
-import Footer from '@components/Footer'
+import Head from "next/head";
+import Header from "@components/Header";
+import Footer from "@components/Footer";
+import { Box, Paper } from "@material-ui/core";
+
+import styles from "./index.module.css";
 
 export default function Home() {
   return (
-    <div className="container">
+    <div className={styles.container}>
       <Head>
-        <title>Next.js Starter!</title>
+        <title>White's Planner</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <Header title="Welcome to my app!" />
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+      <Header title="White's Planner" />
+      <main className={styles.main}>
+        <Box
+          className={styles.box}
+          sx={{
+            px: 8,
+            py: 15,
+            border: "1px dashed grey",
+            display: "flex",
+            flexGrow: 1,
+          }}
+        >
+          <Paper sx={{
+            height: 'auto'
+          }}>
+            <p className="description">
+              Get started by editing <code>pages/index.js</code>
+            </p>
+          </Paper>
+        </Box>
       </main>
-
       <Footer />
     </div>
-  )
+  );
 }

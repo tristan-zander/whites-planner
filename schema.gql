@@ -1,20 +1,35 @@
 type Planner {
-    
+# List of boards
 }
 
 type Class {
-
+# Name
+# List of Assignments
 }
 
 type Assignment {
+# due date
+# name
+# related class
+}
 
+# A group of related assignments.
+type Project 
+ {
+# Name
+# Broken down assignments.
 }
 
 type Board {
-
+# Typeof - To Do/Doing/Done
+# List of assignments
 }
 
 type User {
-
+# Name
+# Identity information
+# Board
+# Assignments
+# Classes
 }
 
