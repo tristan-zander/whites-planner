@@ -13,3 +13,7 @@
     flex-direction: column;
     flex: 1 1;
 }
+
+.board {
+    padding-left: 5rem;
+}

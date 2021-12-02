@@ -3,23 +3,25 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Icon,
   Drawer,
   List,
   ListItem,
-} from "@material-ui/core";
-import { Menu } from "@material-ui/icons";
+  Typography,
+} from "@mui/material";
+import { Menu } from "@mui/icons-material";
 
 export default function Header({ title }) {
   return (
-    <Box sx={{ flexGrow: 1 }} position="relative"  >
+    <Box sx={{ flexGrow: 1 }} position="relative">
       <AppBar position="relative">
         <Toolbar>
-          <IconButton size="medium" sx={{ mr: 100 }}>
+          <IconButton size="medium">
             <Menu fontSize="large" />
           </IconButton>
           <List>
-            <ListItem>{title}</ListItem>
+            <ListItem>
+              <Typography variant="h5" fontWeight="bold" >{title}</Typography>
+            </ListItem>
           </List>
         </Toolbar>
         <Drawer open={false}>
