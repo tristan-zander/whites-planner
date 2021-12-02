@@ -1,5 +1,4 @@
-import { MapsHomeWork } from "@mui/icons-material";
-import { Box, Paper, Card, Typography, Divider } from "@mui/material";
+import { Box, Paper, Typography, Divider } from "@mui/material";
 import List from "./List";
 
 export default function Board(props) {
