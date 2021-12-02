@@ -17,12 +17,16 @@ type Assignment {
 type Project 
  {
 # Name
-# Broken down assignments.
+# Board
 }
 
 type Board {
-# Typeof - To Do/Doing/Done
 # List of assignments
+}
+
+type List {
+# Typeof - To Do/Doing/Done
+# Assignments
 }
 
 type User {
