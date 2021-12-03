@@ -41,7 +41,7 @@ export default function DndListContainer({ lists }) {
           gap: 3,
         }}
       >
-        {elements}{" "}
+        {elements}
       </Box>
     </DragDropContext>
   );
