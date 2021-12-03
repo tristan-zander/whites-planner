@@ -4,8 +4,10 @@ import Head from "next/head";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
+import { resetServerContext, DragDropContext } from "react-beautiful-dnd";
 
 function Application({ Component, pageProps }) {
+  resetServerContext();
   return (
     <ThemeProvider theme={createTheme()}>
       <Box

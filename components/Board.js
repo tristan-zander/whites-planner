@@ -1,20 +1,7 @@
 import { Box, Paper, Typography, Divider } from "@mui/material";
-import List from "./List";
+import DndListContainer from "./DndListContainer";
 
 export default function Board(props) {
-  let lists = [];
-
-  props.lists.forEach((l) => {
-    lists.push(
-      <>
-        <List title={l.title}></List>
-      </>
-    );
-    lists.push(<Divider orientation="vertical" />);
-  });
-
-  lists.pop();
-
   return (
     <Box
       sx={{
@@ -45,17 +32,7 @@ export default function Board(props) {
           {props.title}
         </Typography>
         <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            overflowX: "auto",
-            flexGrow: 1,
-            gap: 3,
-          }}
-        >
-          {lists}
-        </Box>
+        <DndListContainer lists={props.lists}></DndListContainer>
       </Paper>
     </Box>
   );
