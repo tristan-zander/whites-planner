@@ -42,11 +42,10 @@ export default function TaskList(props) {
       <Typography variant="h4" sx={{ m: 1, mt: 3 }}>
         {props.title}
       </Typography>
-      <Droppable droppableId={genID()} mode="virtual" renderClone={renderClone}>
+      <Droppable droppableId={genID()}>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {assignments.map((a, i) => {
-              console.debug(a, i);
               return (
                 <Draggable key={a.id} draggableId={a.id} index={i}>
                   {(provided) => (
