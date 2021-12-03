@@ -16,6 +16,7 @@ export default function DndListContainer({ lists }) {
         key={i.toString()}
         title={l.title}
         ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
+        assignments={l.assignments}
       ></TaskList>
     );
     elements.push(

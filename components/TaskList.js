@@ -8,26 +8,12 @@ import {
 import { useState } from "react";
 import crypto from "crypto";
 
-export default function TaskList(props) {
+export default function TaskList({ assignments, title }) {
   const genID = () => {
     return crypto.randomBytes(3).toString("hex");
   };
 
-  const [assignments, setAssignments] = useState([
-    { desc: "This is an assignments", id: genID() },
-    { desc: "This is another assignments", id: genID() },
-    { desc: "This is the last assignment", id: genID() },
-  ]);
-
-  function renderClone(provided, snapshot, rubric) {
-    <div
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-      ref={provided.innerRef}
-    >
-      Item id: {assignments[rubric.source.index].id}
-    </div>;
-  }
+  console.debug(assignments);
 
   return (
     <Box
@@ -40,9 +26,9 @@ export default function TaskList(props) {
       }}
     >
       <Typography variant="h4" sx={{ m: 1, mt: 3 }}>
-        {props.title}
+        {title}
       </Typography>
-      <Droppable droppableId={genID()}>
+      <Droppable droppableId={title}>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {assignments.map((a, i) => {
