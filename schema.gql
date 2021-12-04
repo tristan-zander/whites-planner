@@ -1,39 +1,59 @@
-type Planner {
-# List of boards
+type User {
+    id: ID! @unique
+    name: String
+    identity: Identity!
+    boards: [Board!]! @relation
+    assignments: [Assignment!] @unique
+    classes: [Class!] @unique
+    projects: [Project!] @unqiue
 }
 
 type Class {
-# Name
-# List of Assignments
+    id: ID!  @unique
+    name: String!
+    color: String
+    classBoard: Board  
+    owner: User! 
+    # endsAt: Time
 }
 
 type Assignment {
-# due date
-# name
-# related class
+    id: ID!  @unique
+    name: String!
+    desc: String
+    dueDate: Time
+    relatedClass: Class  
+    owner: User!  
+    parentTaskList: TaskList @relation
 }
 
-# A group of related assignments.
-type Project 
- {
-# Name
-# Board
+type Project {
+    id: ID! @unique
+    name: String!
+    desc: String
+    board: Board  
+    owner: User!  
 }
 
 type Board {
-# List of assignments
+    id: ID! @unique
+    name: String!
+    list: [TaskList!] @unqiue
+    owner: User! @relation
 }
 
-type List {
-# Typeof - To Do/Doing/Done
-# Assignments
+type TaskList {
+    id: ID!
+    name: String!
+    assignments: [Assignment!] @relation @unique
+    owner: User!  
+    board: Board  
 }
 
-type User {
-# Name
-# Identity information
-# Board
-# Assignments
-# Classes
+type Identity {
+    id: ID!
+    email: String!
+    createdAt: Time!
+    updatedAt: Time!
+    confirmationSentAt: Time!
 }
-
