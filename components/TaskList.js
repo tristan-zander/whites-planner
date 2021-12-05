@@ -13,8 +13,6 @@ export default function TaskList({ assignments, title }) {
     return crypto.randomBytes(3).toString("hex");
   };
 
-  console.debug(assignments);
-
   return (
     <Box
       sx={{
@@ -28,7 +26,21 @@ export default function TaskList({ assignments, title }) {
       <Typography variant="h4" sx={{ m: 1, mt: 3 }}>
         {title}
       </Typography>
-      <Droppable droppableId={title}>
+      <Droppable
+        droppableId={title}
+        renderClone={(provided, snapshot, rubric) => {
+          // This will be an assignment object
+          return (
+            <div
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+            >
+              Rendered
+            </div>
+          );
+        }}
+      >
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {assignments.map((a, i) => {

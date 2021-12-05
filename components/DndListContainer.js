@@ -1,4 +1,5 @@
 import { Box, Divider } from "@mui/material";
+import { useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -7,10 +8,17 @@ import {
 } from "react-beautiful-dnd";
 import TaskList from "./TaskList";
 
-export default function DndListContainer({ lists }) {
+// Drag and drop list container
+export default function DndListContainer(props) {
+  const propLists = props.lists;
+
+  let [lists, setLists] = useState(Array.from(propLists));
+
+  console.debug(lists);
+
   let elements = [];
 
-  lists.forEach((l, i) => {
+  propLists.forEach((l, i) => {
     elements.push(
       <TaskList
         key={i.toString()}
@@ -26,13 +34,13 @@ export default function DndListContainer({ lists }) {
   elements.pop();
 
   function handleOnDragEnd(result) {
-    if (!result?.destination) return;
+    if (!result?.destination || !result?.reason === "DROP") return;
 
     console.debug(result);
   }
 
   return (
-    <DragDropContext onDragEnd={handleOnDragEnd} onDragStart={console.debug}>
+    <DragDropContext onDragEnd={handleOnDragEnd}>
       <Box
         sx={{
           display: "flex",

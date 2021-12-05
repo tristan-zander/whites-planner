@@ -5,33 +5,37 @@ import Header from "@components/Header";
 import Footer from "@components/Footer";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { resetServerContext, DragDropContext } from "react-beautiful-dnd";
+import { Provider } from "react-redux";
+import FaunaProvider from "@components/FaunaProvider";
 
 function Application({ Component, pageProps }) {
   resetServerContext();
   return (
     <ThemeProvider theme={createTheme()}>
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Head>
-          <title>White&#39;s Planner</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <Header title="White's Planner" />
+      <FaunaProvider>
         <Box
           sx={{
-            height: "100%",
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <Component {...pageProps} />
+          <Head>
+            <title>White&#39;s Planner</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+
+          <Header title="White's Planner" />
+          <Box
+            sx={{
+              height: "100%",
+            }}
+          >
+            <Component {...pageProps} />
+          </Box>
+          <Footer />
         </Box>
-        <Footer />
-      </Box>
+      </FaunaProvider>
     </ThemeProvider>
   );
 }

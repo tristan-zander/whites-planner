@@ -43,7 +43,7 @@ type Board {
 }
 
 type TaskList {
-    id: ID!
+    id: ID! @unique
     name: String!
     assignments: [Assignment!] @relation @unique
     owner: User!  
@@ -51,7 +51,7 @@ type TaskList {
 }
 
 type Identity {
-    id: ID!
+    id: ID! @unique
     email: String!
     createdAt: Time!
     updatedAt: Time!
