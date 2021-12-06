@@ -32,7 +32,7 @@ export default function Board(props) {
           {props.title}
         </Typography>
         <Divider />
-        <DndListContainer lists={props.lists}></DndListContainer>
+        <DndListContainer></DndListContainer>
       </Paper>
     </Box>
   );

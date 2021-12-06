@@ -6,13 +6,13 @@ import Footer from "@components/Footer";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { resetServerContext, DragDropContext } from "react-beautiful-dnd";
 import { Provider } from "react-redux";
-import FaunaProvider from "@components/FaunaProvider";
+import store from "../features/store";
 
 function Application({ Component, pageProps }) {
   resetServerContext();
   return (
     <ThemeProvider theme={createTheme()}>
-      <FaunaProvider>
+      <Provider store={store}>
         <Box
           sx={{
             height: "100vh",
@@ -35,7 +35,7 @@ function Application({ Component, pageProps }) {
           </Box>
           <Footer />
         </Box>
-      </FaunaProvider>
+      </Provider>
     </ThemeProvider>
   );
 }

@@ -7,18 +7,16 @@ import {
   resetServerContext,
 } from "react-beautiful-dnd";
 import TaskList from "./TaskList";
+import { useSelector } from "react-redux";
 
 // Drag and drop list container
 export default function DndListContainer(props) {
-  const propLists = props.lists;
-
-  let [lists, setLists] = useState(Array.from(propLists));
-
-  console.debug(lists);
+  const assignments = useSelector((state) => state.assignments.value);
+  const lists = useSelector((state) => state.taskLists.value);
 
   let elements = [];
 
-  propLists.forEach((l, i) => {
+  Object.values(lists).forEach((l, i) => {
     elements.push(
       <TaskList
         key={i.toString()}

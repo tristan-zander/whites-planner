@@ -1,11 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import Board from "@components/Board";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Home() {
-  return (
-    <Board
-      title="Homework"
-      lists={[
+  const assignments = useSelector((state) => state.assignments);
+  const lists = useSelector((state) => state.taskLists);
+
+  /*[
         {
           title: "To Do",
           assignments: [
@@ -30,7 +32,8 @@ export default function Home() {
             { desc: "This is the last assignment 3", id: "9" },
           ],
         },
-      ]}
-    ></Board>
+      ]}*/
+  return (
+    <Board title="Homework" lists={lists} assignments={assignments}></Board>
   );
 }
