@@ -12,11 +12,15 @@ import {
   deleteAssignment,
   addAssignment,
 } from "@features/assignments/assignmentsSlice";
-import { updatetaskList } from "@features/task_lists/taskListsSlice";
+import {
+  moveAssignment,
+  updatetaskList,
+} from "@features/task_lists/taskListsSlice";
 
 // Drag and drop list container
 export default function MultiTaskListContainer(props) {
   const lists = useSelector((state) => state.taskLists.value);
+  const assignments = useSelector((state) => state.assignments.value);
 
   const dispatch = useDispatch();
 
@@ -25,7 +29,7 @@ export default function MultiTaskListContainer(props) {
   Object.values(lists).forEach((l, i) => {
     elements.push(
       <TaskList
-        key={l.ref.id}
+        key={l.ref.id + l.title + i.toString()}
         title={l.title}
         ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
         assignmentIds={l.assignments}
@@ -43,19 +47,21 @@ export default function MultiTaskListContainer(props) {
 
     console.debug(result);
 
-    const oldId = result.source.droppableId;
-    const newId = result.destination.droppableId;
-
-    const source =
+    const sourceId =
       lists[result.source.droppableId].assignments[result.source.index];
 
-    dispatch();
-    // Update the old list.
-    // moveAssignmentFromTo ({
-    //  assignment: "id",
-    //  from: "taskListId"
-    //  to: "taskListId"
-    // })
+    const assignment = assignments[sourceId.id];
+    const from = lists[result.source.droppableId];
+    const to = lists[result.destination.droppableId];
+
+    dispatch(
+      moveAssignment({
+        assignment,
+        from,
+        to,
+        destIndex: result.destination.index,
+      })
+    );
   }
 
   return (

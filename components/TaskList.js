@@ -46,9 +46,12 @@ export default function TaskList({ assignmentIds, title, droppableId }) {
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {assignments.map((a, i) => {
-              console.debug(a);
               return (
-                <Draggable key={a.ref.id} draggableId={a.ref.id} index={i}>
+                <Draggable
+                  key={a.ref.id + a.title + i.toString()}
+                  draggableId={a.ref.id}
+                  index={i}
+                >
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
