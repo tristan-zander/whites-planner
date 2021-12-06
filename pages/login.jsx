@@ -58,7 +58,10 @@ export default function Login(props) {
             onFailure={handleLoginFailure}
             onAutoLoadFinished={handleAutoLoadFinished}
             onSuccess={handleLoginSuccess}
-            isSignedIn={true}
+            fetchBasicProfile={false}
+            responseType="code"
+            redirectUri={`http://${window.location.origin}/?completed_login=true`}
+            isSignedIn={false}
           />
         </div>
       )}

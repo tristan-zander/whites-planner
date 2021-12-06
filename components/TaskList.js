@@ -9,9 +9,7 @@ import { useState } from "react";
 import crypto from "crypto";
 
 export default function TaskList({ assignments, title }) {
-  const genID = () => {
-    return crypto.randomBytes(3).toString("hex");
-  };
+  console.debug(assignments, title);
 
   return (
     <Box

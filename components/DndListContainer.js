@@ -1,5 +1,5 @@
 import { Box, Divider } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -17,6 +17,7 @@ export default function DndListContainer(props) {
   let elements = [];
 
   Object.values(lists).forEach((l, i) => {
+    console.debug("Inserting: ", l);
     elements.push(
       <TaskList
         key={i.toString()}
@@ -26,7 +27,7 @@ export default function DndListContainer(props) {
       ></TaskList>
     );
     elements.push(
-      <Divider key={l.title.toString() + i.toString()} orientation="vertical" />
+      <Divider key={l.title + i.toString()} orientation="vertical" />
     );
   });
   elements.pop();

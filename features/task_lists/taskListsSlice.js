@@ -7,8 +7,9 @@ export const taskListsSlice = createSlice({
   },
   reducers: {
     addtaskList: (state, action) => {
-      const { ref, ts, name, assignmentRefs } = action.payload;
-      state.value[ref.id] = { ts, name, assignmentRefs };
+      console.debug("Assigning Task List", state, action);
+      const { ref, ts, title, assignments } = action.payload;
+      state.value[ref.id] = { ref, ts, title, assignments };
     },
     deletetaskList: (state, action) => {
       const { ref } = action.payload;
