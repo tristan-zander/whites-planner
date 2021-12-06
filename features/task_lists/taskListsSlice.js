@@ -7,7 +7,6 @@ export const taskListsSlice = createSlice({
   },
   reducers: {
     addtaskList: (state, action) => {
-      console.debug("Assigning Task List", state, action);
       const { ref, ts, title, assignments } = action.payload;
       state.value[ref.id] = { ref, ts, title, assignments };
     },
@@ -16,7 +15,7 @@ export const taskListsSlice = createSlice({
       if (!ref.id) {
         return { error: "An ID was not provided." };
       }
-      state.value[ref.id] = null;
+      delete state.value[ref.id];
     },
     updatetaskList: (state, action) => {
       const { ref } = action.payload;

@@ -3,6 +3,7 @@ import Board from "@components/Board";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addtaskList } from "@features/task_lists/taskListsSlice";
+import { addAssignment } from "@features/assignments/assignmentsSlice";
 
 export default function Home() {
   const assignments = useSelector((state) => state.assignments.value);
@@ -11,18 +12,14 @@ export default function Home() {
 
   const [didLoad, setDidLoad] = useState(false);
 
-  const testData = [
+  const testLists = [
     {
       ref: {
         id: "1",
       },
       ts: 123123,
       title: "To Do",
-      assignments: [
-        { desc: "This is an assignments", id: "1" },
-        { desc: "This is another assignments", id: "2" },
-        { desc: "This is the last assignment", id: "3" },
-      ],
+      assignments: [{ id: "1" }, { id: "2" }, { id: "3" }],
     },
     {
       ref: {
@@ -30,11 +27,7 @@ export default function Home() {
       },
       ts: 123123,
       title: "Doing",
-      assignments: [
-        { desc: "This is an assignments 2", id: "4" },
-        { desc: "This is another assignments 2", id: "5" },
-        { desc: "This is the last assignment 2", id: "6" },
-      ],
+      assignments: [{ id: "4" }, { id: "5" }, { id: "6" }],
     },
     {
       ref: {
@@ -42,25 +35,59 @@ export default function Home() {
       },
       ts: 123123,
       title: "Done",
-      assignments: [
-        { desc: "This is an assignments 3", id: "7" },
-        { desc: "This is another assignments 3", id: "8" },
-        { desc: "This is the last assignment 3", id: "9" },
-      ],
+      assignments: [{ id: "7" }, { id: "8" }, { id: "9" }],
     },
   ];
+
+  const testAssignments = testLists
+    .map((l, i) => {
+      return [
+        {
+          ref: {
+            id: `${i * 3 + 1}`,
+          },
+          ts: 123123,
+          title: "Do homework.",
+          desc: "Description",
+          dueDate: "unimplemented",
+          classId: "unimplemented",
+        },
+        {
+          ref: {
+            id: `${i * 3 + 2}`,
+          },
+          ts: 123123,
+          title: "Do homework.",
+          desc: "Description",
+          dueDate: "unimplemented",
+          classId: "unimplemented",
+        },
+        {
+          ref: {
+            id: `${i * 3 + 3}`,
+          },
+          ts: 123123,
+          title: "Do homework.",
+          desc: "Description",
+          dueDate: "unimplemented",
+          classId: "unimplemented",
+        },
+      ];
+    })
+    .flat();
 
   useEffect(() => {
     if (!didLoad) {
       console.debug("injecting test data");
-      testData.forEach((l) => {
+      testLists.forEach((l) => {
         dispatch(addtaskList(l));
+      });
+      testAssignments.forEach((a) => {
+        dispatch(addAssignment(a));
       });
       setDidLoad(true);
     }
-  }, [testData, didLoad]);
-
-  console.debug(lists);
+  }, [testLists, didLoad, testAssignments]);
 
   return (
     <Board title="Homework" lists={lists} assignments={assignments}></Board>

@@ -7,23 +7,29 @@ import {
   resetServerContext,
 } from "react-beautiful-dnd";
 import TaskList from "./TaskList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteAssignment,
+  addAssignment,
+} from "@features/assignments/assignmentsSlice";
+import { updatetaskList } from "@features/task_lists/taskListsSlice";
 
 // Drag and drop list container
-export default function DndListContainer(props) {
-  const assignments = useSelector((state) => state.assignments.value);
+export default function MultiTaskListContainer(props) {
   const lists = useSelector((state) => state.taskLists.value);
+
+  const dispatch = useDispatch();
 
   let elements = [];
 
   Object.values(lists).forEach((l, i) => {
-    console.debug("Inserting: ", l);
     elements.push(
       <TaskList
-        key={i.toString()}
+        key={l.ref.id}
         title={l.title}
         ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
-        assignments={l.assignments}
+        assignmentIds={l.assignments}
+        droppableId={l.ref.id}
       ></TaskList>
     );
     elements.push(
@@ -36,6 +42,20 @@ export default function DndListContainer(props) {
     if (!result?.destination || !result?.reason === "DROP") return;
 
     console.debug(result);
+
+    const oldId = result.source.droppableId;
+    const newId = result.destination.droppableId;
+
+    const source =
+      lists[result.source.droppableId].assignments[result.source.index];
+
+    dispatch();
+    // Update the old list.
+    // moveAssignmentFromTo ({
+    //  assignment: "id",
+    //  from: "taskListId"
+    //  to: "taskListId"
+    // })
   }
 
   return (

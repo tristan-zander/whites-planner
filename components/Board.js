@@ -1,5 +1,5 @@
 import { Box, Paper, Typography, Divider } from "@mui/material";
-import DndListContainer from "./DndListContainer";
+import MultiTaskListContainer from "@components/MultiTaskListContainer";
 
 export default function Board(props) {
   return (
@@ -32,7 +32,7 @@ export default function Board(props) {
           {props.title}
         </Typography>
         <Divider />
-        <DndListContainer></DndListContainer>
+        <MultiTaskListContainer></MultiTaskListContainer>
       </Paper>
     </Box>
   );

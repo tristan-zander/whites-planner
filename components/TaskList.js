@@ -7,9 +7,13 @@ import {
 } from "react-beautiful-dnd";
 import { useState } from "react";
 import crypto from "crypto";
+import { useSelector } from "react-redux";
 
-export default function TaskList({ assignments, title }) {
-  console.debug(assignments, title);
+export default function TaskList({ assignmentIds, title, droppableId }) {
+  const assignmentSelector = useSelector((state) => state.assignments.value);
+  const assignments = assignmentIds.map((ref) => {
+    return assignmentSelector[ref.id];
+  });
 
   return (
     <Box
@@ -25,7 +29,7 @@ export default function TaskList({ assignments, title }) {
         {title}
       </Typography>
       <Droppable
-        droppableId={title}
+        droppableId={droppableId}
         renderClone={(provided, snapshot, rubric) => {
           // This will be an assignment object
           return (
@@ -42,15 +46,16 @@ export default function TaskList({ assignments, title }) {
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {assignments.map((a, i) => {
+              console.debug(a);
               return (
-                <Draggable key={a.id} draggableId={a.id} index={i}>
+                <Draggable key={a.ref.id} draggableId={a.ref.id} index={i}>
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <Paper sx={{ m: 1 }}>{a.desc}</Paper>
+                      <Paper sx={{ m: 1 }}>{a.title}</Paper>
                     </div>
                   )}
                 </Draggable>

@@ -7,8 +7,8 @@ export const assignmentsSlice = createSlice({
   },
   reducers: {
     addAssignment: (state, action) => {
-      const { ref, ts, name, desc, dueDate, classRef } = action.payload;
-      state.value[ref.id] = { ts, name, desc, dueDate, classRef };
+      const { ref, ts, title, desc, dueDate, classId } = action.payload;
+      state.value[ref.id] = { ref, ts, title, desc, dueDate, classId };
     },
     deleteAssignment: (state, action) => {
       const { ref } = action.payload;
