@@ -1,5 +1,4 @@
 type User {
-    id: ID! @unique
     name: String
     identity: Identity!
     boards: [Board!]! @relation
@@ -9,7 +8,6 @@ type User {
 }
 
 type Class {
-    id: ID!  @unique
     name: String!
     color: String
     classBoard: Board  
@@ -18,7 +16,6 @@ type Class {
 }
 
 type Assignment {
-    id: ID!  @unique
     name: String!
     desc: String
     dueDate: Time
@@ -28,7 +25,6 @@ type Assignment {
 }
 
 type Project {
-    id: ID! @unique
     name: String!
     desc: String
     board: Board  
@@ -36,14 +32,12 @@ type Project {
 }
 
 type Board {
-    id: ID! @unique
     name: String!
     list: [TaskList!] @unqiue
     owner: User! @relation
 }
 
 type TaskList {
-    id: ID! @unique
     name: String!
     assignments: [Assignment!] @relation @unique
     owner: User!  
@@ -51,7 +45,7 @@ type TaskList {
 }
 
 type Identity {
-    id: ID! @unique
+    googleId: ID! @unique
     email: String!
     createdAt: Time!
     updatedAt: Time!

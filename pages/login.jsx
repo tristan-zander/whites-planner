@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 import { updateContext, deleteContext } from "@features/context/contextSlice";
+import { Router } from "next/dist/client/router";
 
 export default function Login(props) {
   const [loading, setLoading] = useState("Loading...");
@@ -11,7 +12,18 @@ export default function Login(props) {
   const context = useSelector((state) => state.context.value);
   const dispatch = useDispatch();
 
-  const handleLoginSuccess = (response) => {
+  const [origin, setOrigin] = useState(null);
+
+  const effect = useEffect(() => {
+    if (typeof window !== undefined) {
+      setOrigin(
+        window.location.origin.toString() + "/.netlify/functions/google-auth"
+      );
+    }
+    console.log(origin);
+  }, [origin]);
+
+  const handleLoginSuccess = async (response) => {
     console.log("Login Success ", response);
     dispatch(
       updateContext({
@@ -19,6 +31,13 @@ export default function Login(props) {
         profile: response.profileObj,
       })
     );
+
+    const res = await fetch(
+      `${window.location.origin}/.netlify/functions/google-auth?id_token=${response.tokenObj.id_token}`
+    );
+
+    console.debug(res);
+
     setLoading();
   };
 
@@ -58,10 +77,9 @@ export default function Login(props) {
             onFailure={handleLoginFailure}
             onAutoLoadFinished={handleAutoLoadFinished}
             onSuccess={handleLoginSuccess}
-            fetchBasicProfile={false}
-            responseType="code"
-            redirectUri={`http://${window.location.origin}/?completed_login=true`}
-            isSignedIn={false}
+            fetchBasicProfile={true}
+            responseType="id_token"
+            isSignedIn={true}
           />
         </div>
       )}

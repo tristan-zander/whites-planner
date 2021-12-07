@@ -5,15 +5,20 @@ import {
   Droppable,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { useState } from "react";
-import crypto from "crypto";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function TaskList({ assignmentIds, title, droppableId }) {
   const assignmentSelector = useSelector((state) => state.assignments.value);
-  const assignments = assignmentIds.map((ref) => {
-    return assignmentSelector[ref.id];
-  });
+  const [assignments, setAssignments] = useState([]);
+
+  useEffect(() => {
+    // This shouldn't be using assignment ids at all. It should take it directly from the state.
+    const assignments = assignmentIds.map((ref) => {
+      return assignmentSelector[ref.id];
+    });
+    setAssignments(assignments);
+  }, [assignmentSelector, assignmentIds]);
 
   return (
     <Box
