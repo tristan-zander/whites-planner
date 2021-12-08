@@ -1,0 +1,25 @@
+
+
+CreateRole({
+  name: "normal_user",
+  membership: {
+    resource: Collection("User")
+  },
+  privileges: [
+    {
+      resource: Collection("User"),
+      actions: {
+        read: Query(
+          Lambda("userRef", 
+              Equals(Var("userRef"), Select("instance", Get(CurrentToken()))),
+          )
+        ),
+        write: Query(
+          Lambda("userRef",
+              Equals(Var("userRef"), Select("instance", Get(CurrentToken()))),
+          )
+        )
+      }
+    }
+  ]
+})

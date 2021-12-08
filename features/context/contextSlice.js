@@ -2,21 +2,24 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const contextSlice = createSlice({
   name: "context",
-  initialState: {
-    value: null,
-  },
+  initialState: {},
   reducers: {
     updateContext: (state, action) => {
-      state.value = action.payload;
+      state = { ...state, ...action.payload };
     },
-    deleteContext: (state) => {
-      // Need to use thunk here to revoke the token.
-      state.value = null;
+    addError: (state, action) => {
+      state.erorr = action.payload;
+    },
+    clearErrors: (state) => {
+      state.error = null;
+    },
+    setAccessToken: (state, action) => {
+      state.token = action.payload.token;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateContext, deleteContext } = contextSlice.actions;
+export const { updateContext, addError, setAccessToken } = contextSlice.actions;
 
 export default contextSlice.reducer;

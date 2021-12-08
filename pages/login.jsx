@@ -3,8 +3,21 @@ import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
-import { updateContext, deleteContext } from "@features/context/contextSlice";
+import {
+  updateContext,
+  addError,
+  setAccessToken,
+} from "@features/context/contextSlice";
 import { Router } from "next/dist/client/router";
+import {
+  Client,
+  CurrentIdentity,
+  CurrentToken,
+  HasCurrentIdentity,
+  HasCurrentToken,
+  Now,
+  Get,
+} from "faunadb";
 
 export default function Login(props) {
   const [loading, setLoading] = useState("Loading...");
@@ -20,11 +33,9 @@ export default function Login(props) {
         window.location.origin.toString() + "/.netlify/functions/google-auth"
       );
     }
-    console.log(origin);
   }, [origin]);
 
   const handleLoginSuccess = async (response) => {
-    console.log("Login Success ", response);
     dispatch(
       updateContext({
         token: response.tokenObj,
@@ -34,11 +45,36 @@ export default function Login(props) {
 
     const res = await fetch(
       `${window.location.origin}/.netlify/functions/google-auth?id_token=${response.tokenObj.id_token}`
-    );
+    ).catch(console.error);
 
-    console.debug(res);
+    const body = await res.json().catch(console.error);
 
-    setLoading();
+    if (res.status != 200) {
+      dispatch(
+        addError({
+          error:
+            "Could not finish login. The server failed to send a database access token.",
+          message: body,
+        })
+      );
+    }
+
+    dispatch(setAccessToken({ token: body.secret }));
+
+    console.debug(body.secret);
+
+    const fauna = new Client({
+      secret: process.env.NEXT_PUBLIC_FAUNADB_CLIENT_SECRET,
+      headers: {
+        Authorization: `Bearer ${body.secret}`,
+      },
+    });
+
+    const checkIdentity = await fauna
+      .query(CurrentToken())
+      .catch(console.error);
+
+    console.debug(checkIdentity);
   };
 
   const handleLoginFailure = (error) => {
@@ -48,7 +84,7 @@ export default function Login(props) {
 
   const handleLogoutSuccess = (response) => {
     console.log("Logout Success ", response);
-    dispatch(deleteContext());
+    dispatch(updateContext({ user: null, profile: null }));
   };
 
   const handleLogoutFailure = (error) => {
@@ -80,6 +116,11 @@ export default function Login(props) {
             fetchBasicProfile={true}
             responseType="id_token"
             isSignedIn={true}
+          />
+          <GoogleLogout
+            clientId="79968354707-16r3r368f80tqlfmiqq9ls5u06g1q5pi.apps.googleusercontent.com"
+            onLogoutSuccess={handleLogoutSuccess}
+            onFailure={handleLogoutFailure}
           />
         </div>
       )}

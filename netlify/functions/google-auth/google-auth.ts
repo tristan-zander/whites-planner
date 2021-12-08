@@ -29,6 +29,18 @@ export const handler: Handler = async (event, _context) => {
     const client = new OAuth2Client(clientId);
     const idToken = event.queryStringParameters.id_token;
 
+    if (!process.env.FAUNADB_SERVER_SECRET) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "Fauna server secret not set.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+    }
+
     if (!idToken) {
       return {
         statusCode: 400,
@@ -115,6 +127,7 @@ export const handler: Handler = async (event, _context) => {
       headers: { "Content-Type": "application/json" },
     };
   } catch (e: Error | any) {
+    console.debug(e);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: e.message }),
