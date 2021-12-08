@@ -13,13 +13,16 @@ import {
   addUser,
   updateProfile,
 } from "@features/context/contextSlice";
-import { Client, Get, Collection, Documents } from "faunadb";
+import { Client, Get, Collection, Documents, Paginate, Ref } from "faunadb";
 
 import { Dialog, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function LoginPrompt(props) {
   const dispatch = useDispatch();
+
+  // TODO: See if the url has all the stuff from google redirect
+  // Then Router.push('/')
 
   const handleLoginSuccess = async (response) => {
     dispatch(
@@ -46,21 +49,19 @@ export default function LoginPrompt(props) {
 
     dispatch(setAccessToken({ token: body.secret }));
 
-    console.debug(body.secret);
-
     const fauna = new Client({
-      secret: process.env.NEXT_PUBLIC_FAUNADB_CLIENT_SECRET,
-      headers: {
-        Authorization: `Bearer ${body.secret}`,
-      },
+      secret: body.secret,
     });
 
-    dispatch(addFaunaClient({ fauna }));
+    console.debug(body);
 
-    const user = fauna
+    const user = await fauna
       .query(Get(Documents(Collection("User"))))
       .catch(console.error);
-    if (user === null) {
+
+    console.debug(user);
+
+    if (user?.requestResult?.query === null) {
       throw new Error("There was an issue getting your user.");
     }
 

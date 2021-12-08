@@ -100,30 +100,22 @@ export const handler: Handler = async (event, _context) => {
     );
 
     // Create a Fauna token for the user.
+    // TODO: Make sure that the user can only have X tokens active
     const token = (await fauna.query(
       Let(
         {
           tokenSet: Match(Index("tokens_by_instance"), userRef as object),
         },
-        Do(
-          If(
-            IsNonEmpty(Var("tokenSet")),
-            Delete(Select("ref", Get(Var("tokenSet")))),
-            null
-          ),
-          Create(Tokens(), {
-            instance: userRef,
-            ttl: TimeAdd(Now(), 3, "hours"),
-          })
-        )
+        Create(Tokens(), {
+          instance: userRef,
+          ttl: TimeAdd(Now(), 3, "hours"),
+        })
       )
     )) as any;
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        secret: token.secret,
-      }),
+      body: JSON.stringify(token),
       headers: { "Content-Type": "application/json" },
     };
   } catch (e: Error | any) {
