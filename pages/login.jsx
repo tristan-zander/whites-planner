@@ -67,6 +67,8 @@ export default function Login(props) {
       secret: process.env.NEXT_PUBLIC_FAUNADB_CLIENT_SECRET,
       headers: {
         Authorization: `Bearer ${body.secret}`,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PATCH,PUT,OPTIONS,DELETE",
       },
     });
 
@@ -102,7 +104,14 @@ export default function Login(props) {
   return (
     <div>
       {context ? (
-        <div>Authenticated! {JSON.stringify(context)}</div>
+        <div>
+          <GoogleLogout
+            clientId="79968354707-16r3r368f80tqlfmiqq9ls5u06g1q5pi.apps.googleusercontent.com"
+            onLogoutSuccess={handleLogoutSuccess}
+            onFailure={handleLogoutFailure}
+          />
+          Authenticated! {JSON.stringify(context)}
+        </div>
       ) : (
         <div>
           <h1>Login with Google</h1>
@@ -116,11 +125,6 @@ export default function Login(props) {
             fetchBasicProfile={true}
             responseType="id_token"
             isSignedIn={true}
-          />
-          <GoogleLogout
-            clientId="79968354707-16r3r368f80tqlfmiqq9ls5u06g1q5pi.apps.googleusercontent.com"
-            onLogoutSuccess={handleLogoutSuccess}
-            onFailure={handleLogoutFailure}
           />
         </div>
       )}

@@ -1,25 +1,275 @@
-
-
 CreateRole({
-  name: "normal_user",
+  name: "token_user",
   membership: {
-    resource: Collection("User")
+    resource: Collection("User"),
   },
   privileges: [
     {
       resource: Collection("User"),
       actions: {
         read: Query(
-          Lambda("userRef", 
-              Equals(Var("userRef"), Select("instance", Get(CurrentToken()))),
+          Lambda(
+            "userRef",
+            Equals(Var("userRef"), Select("instance", Get(CurrentToken())))
           )
         ),
         write: Query(
-          Lambda("userRef",
-              Equals(Var("userRef"), Select("instance", Get(CurrentToken()))),
+          Lambda(
+            "userRef",
+            Equals(Var("userRef"), Select("instance", Get(CurrentToken())))
           )
-        )
-      }
-    }
-  ]
-})
+        ),
+      },
+    },
+    {
+      resource: Collection("Assignment"),
+      actions: {
+        read: Query(
+          Lambda(
+            "assignmentRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("assignmentRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        write: Query(
+          Lambda(
+            "assignmentRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("assignmentRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        delete: Query(
+          Lambda(
+            "assignmentRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("assignmentRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        history_read: Query(
+          Lambda(
+            "assignmentRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("assignmentRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        create: true,
+      },
+    },
+    {
+      resource: Collection("Board"),
+      actions: {
+        read: Query(
+          Lambda(
+            "boardRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("boardRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        write: Query(
+          Lambda(
+            "boardRef",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("boardRef"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        delete: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        history_read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        create: true,
+      },
+    },
+    {
+      resource: Collection("Class"),
+      actions: {
+        read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        write: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        delete: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        history_read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        create: true,
+      },
+    },
+    {
+      resource: Collection("Project"),
+      actions: {
+        read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        write: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        delete: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        history_read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        create: true,
+      },
+    },
+    {
+      resource: Collection("TaskList"),
+      actions: {
+        read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        write: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        delete: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        history_read: Query(
+          Lambda(
+            "ref",
+            Let(
+              {
+                ownerRef: Select("owner", Get(Var("ref"))),
+              },
+              Equals(Var("ownerRef"), Select("instance", Get(CurrentToken())))
+            )
+          )
+        ),
+        create: true,
+      },
+    },
+  ],
+});
