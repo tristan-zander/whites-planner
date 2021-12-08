@@ -5,6 +5,7 @@ export const boardsSlice = createSlice({
   initialState: {},
   reducers: {
     addBoard: (state, action) => {
+      console.debug(action.payload);
       const { ref, ts, name, lists, owner, primaryBoard } = action.payload;
       state[ref.id] = { ts, name, lists, owner, primaryBoard };
     },

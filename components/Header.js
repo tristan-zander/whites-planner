@@ -16,6 +16,7 @@ import {
 import { Menu as MenuIcon, Add as AddIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import BoardCreatorPanel from "./BoardCreatorPromp";
 
 export default function Header({ title }) {
   const context = useSelector((state) => state.context);
@@ -35,19 +36,7 @@ export default function Header({ title }) {
 
   function openBoardCreationPanel() {
     setOpenPanel(true);
-    setPanel(
-      <Dialog open={openPanel}>
-        <Typography variant="h2" sx={{ fontWeight: "bold" }}>
-          Create a new board
-        </Typography>
-        <Button onClick={closeBoardCreationPanel}>Close</Button>
-      </Dialog>
-    );
-  }
-
-  function closeBoardCreationPanel() {
-    setOpenPanel(true);
-    setPanel(null);
+    setPanel(<BoardCreatorPanel open={openPanel} />);
   }
 
   return (

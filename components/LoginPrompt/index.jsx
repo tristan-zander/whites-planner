@@ -13,10 +13,23 @@ import {
   addUser,
   updateProfile,
 } from "@features/context/contextSlice";
-import { Client, Get, Collection, Documents, Paginate, Ref } from "faunadb";
+import {
+  Client,
+  Get,
+  Collection,
+  Documents,
+  Paginate,
+  Ref,
+  CurrentToken,
+  Call,
+  Function,
+} from "faunadb";
 
 import { Dialog, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { addBoard } from "@features/boards/boardsSlice";
+import { addAssignment } from "@features/assignments/assignmentsSlice";
+import { addtaskList } from "@features/task_lists/taskListsSlice";
 
 export default function LoginPrompt(props) {
   const dispatch = useDispatch();
@@ -53,19 +66,55 @@ export default function LoginPrompt(props) {
       secret: body.secret,
     });
 
-    console.debug(body);
-
-    const user = await fauna
-      .query(Get(Documents(Collection("User"))))
+    const data = await fauna
+      .query(Call(Function("QueryInitialData")))
       .catch(console.error);
 
-    console.debug(user);
-
-    if (user?.requestResult?.query === null) {
-      throw new Error("There was an issue getting your user.");
+    if (data === undefined) {
+      return;
     }
 
-    dispatch(addUser({ user }));
+    console.debug(data);
+
+    const { user, boards, assignments, taskLists } = data;
+
+    const userData = {
+      user: {
+        ...user.data,
+        ref: user.ref,
+        ts: user.ts,
+        registeredSince: user.data.registeredSince.value,
+      },
+    };
+
+    dispatch(addUser(userData));
+
+    boards.data.forEach((board) => {
+      const boardData = {
+        ...board.data,
+        ref: board.ref,
+        ts: board.ts,
+      };
+      dispatch(addBoard(boardData));
+    });
+
+    assignments.data.forEach((d) => {
+      const data = {
+        ...d.data,
+        ref: d.ref,
+        ts: d.ts,
+      };
+      dispatch(addAssignment(data));
+    });
+
+    taskLists.data.forEach((d) => {
+      const data = {
+        ...d.data,
+        ref: d.ref,
+        ts: d.ts,
+      };
+      dispatch(addtaskList(data));
+    });
   };
 
   const handleLoginFailure = (error) => {

@@ -1,0 +1,20 @@
+Query(
+  Lambda(
+    "x",
+    Let(
+      {
+        boards: Paginate(Documents(Collection("Board"))),
+        taskLists: Paginate(Documents(Collection("TaskList"))),
+        classes: Paginate(Documents(Collection("Class"))),
+        assignment: Paginate(Documents(Collection("Assignment"))),
+      },
+
+      {
+        boards: Var("boards"),
+        taskLists: Var("taskLists"),
+        classes: Var("classes"),
+        assignment: Var("assignment"),
+      }
+    )
+  )
+);
