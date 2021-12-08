@@ -16,10 +16,26 @@ export const contextSlice = createSlice({
     setAccessToken: (state, action) => {
       state.token = action.payload.token;
     },
+    addFaunaClient: (state, action) => {
+      state.fauna = action.payload.fauna;
+    },
+    addUser: (state, action) => {
+      state.user = action.payload.user;
+    },
+    updateProfile: (state, action) => {
+      state.profile = action.payload.profile;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateContext, addError, setAccessToken } = contextSlice.actions;
+export const {
+  updateContext,
+  addError,
+  setAccessToken,
+  addFaunaClient,
+  addUser,
+  updateProfile,
+} = contextSlice.actions;
 
 export default contextSlice.reducer;

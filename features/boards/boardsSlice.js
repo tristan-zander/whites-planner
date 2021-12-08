@@ -2,24 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const boardsSlice = createSlice({
   name: "boards",
-  initialState: {
-    value: {},
-  },
+  initialState: {},
   reducers: {
     addBoard: (state, action) => {
-      const { ref, ts, name, listRefs } = action.payload;
-      state.value[ref.id] = { ts, name, listRefs };
+      const { ref, ts, name, lists, owner, primaryBoard } = action.payload;
+      state[ref.id] = { ts, name, lists, owner, primaryBoard };
     },
     deleteBoard: (state, action) => {
       const { ref } = action.payload;
       if (!ref.id) {
         return { error: "An ID was not provided." };
       }
-      state.value[ref.id] = null;
+      state[ref.id] = null;
     },
     updateBoard: (state, action) => {
       const { ref } = action.payload;
-      state.value[ref.id] = action.payload;
+      state[ref.id] = action.payload;
     },
   },
 });
