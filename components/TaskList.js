@@ -8,17 +8,19 @@ import {
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-export default function TaskList({ assignmentIds, title, droppableId }) {
-  const assignmentSelector = useSelector((state) => state.assignments.value);
+export default function TaskList({ id }) {
+  const list = useSelector((state) => state.taskLists[id]);
+  const assignmentData = useSelector((state) => state.assignments);
   const [assignments, setAssignments] = useState([]);
 
+  async function fetchAssignments() {}
+
   useEffect(() => {
-    // This shouldn't be using assignment ids at all. It should take it directly from the state.
-    const assignments = assignmentIds.map((ref) => {
-      return assignmentSelector[ref.id];
-    });
-    setAssignments(assignments);
-  }, [assignmentSelector, assignmentIds]);
+    const assignmentsForThisList = Object.values(assignmentData).filter(
+      (a) => a.board == id
+    );
+    setAssignments(assignmentsForThisList);
+  }, [assignmentData, id, list]);
 
   return (
     <Box
@@ -31,10 +33,10 @@ export default function TaskList({ assignmentIds, title, droppableId }) {
       }}
     >
       <Typography variant="h4" sx={{ m: 1, mt: 3 }}>
-        {title}
+        {list.name}
       </Typography>
       <Droppable
-        droppableId={droppableId}
+        droppableId={id}
         renderClone={(provided, snapshot, rubric) => {
           // This will be an assignment object
           return (
@@ -50,20 +52,21 @@ export default function TaskList({ assignmentIds, title, droppableId }) {
       >
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
+            {assignments.length > 0 ? null : (
+              <Typography>
+                Hey, you should add an assignment to this.
+              </Typography>
+            )}
             {assignments.map((a, i) => {
               return (
-                <Draggable
-                  key={a.ref.id + a.title + i.toString()}
-                  draggableId={a.ref.id}
-                  index={i}
-                >
+                <Draggable key={a.ref.id} draggableId={a.ref.id} index={i}>
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <Paper sx={{ m: 1 }}>{a.title}</Paper>
+                      <Paper sx={{ m: 1 }}>{a.name}</Paper>
                     </div>
                   )}
                 </Draggable>

@@ -15,8 +15,6 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
 export default function Board(props) {
-  const fauna = useSelector((state) => state.context.fauna);
-  const owner = useSelector((state) => state.context.user);
   const boardData = useSelector((state) => state.boards);
 
   const dispatch = useDispatch();
@@ -53,7 +51,14 @@ export default function Board(props) {
               {props.title}
             </Typography>
             <Divider />
-            <MultiTaskListContainer></MultiTaskListContainer>
+            <MultiTaskListContainer
+              id={
+                // Return the first ID that is the primary board.
+                Object.keys(boardData).filter(
+                  (id) => boardData[id].primaryBoard
+                )[0]
+              }
+            ></MultiTaskListContainer>
           </>
         ) : (
           <div>

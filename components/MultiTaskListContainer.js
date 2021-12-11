@@ -19,32 +19,33 @@ import {
 
 // Drag and drop list container
 export default function MultiTaskListContainer(props) {
-  const lists = useSelector((state) => state.taskLists.value);
-  const assignments = useSelector((state) => state.assignments.value);
+  const listsData = useSelector((state) => state.taskLists);
+  const board = useSelector((state) => state.boards[props.id]);
 
   const dispatch = useDispatch();
 
-  let elements = [];
+  const [lists, setLists] = useState([]);
+  const [elements, setElements] = useState([]);
 
   useEffect(() => {
-    if (lists === undefined) return;
-    elements = [];
+    const lists = board.lists
+      .map((l) => listsData[l.value.id])
+      .filter((l) => l !== undefined);
+    setLists(lists);
+  }, [board, listsData]);
+
+  useEffect(() => {
+    if (lists === undefined || lists.length <= 0) return;
+    let components = [];
     Object.values(lists).forEach((l, i) => {
-      elements.push(
-        <TaskList
-          key={l.ref.id + l.title + i.toString()}
-          title={l.title}
-          ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
-          assignmentIds={l.assignments}
-          droppableId={l.ref.id}
-        ></TaskList>
-      );
-      elements.push(
-        <Divider key={l.title + i.toString()} orientation="vertical" />
+      components.push(<TaskList key={l.ref.id} id={l.ref.id}></TaskList>);
+      components.push(
+        <Divider key={l.ref.id + i.toString()} orientation="vertical" />
       );
     });
-    elements.pop();
-  }, [elements, lists]);
+    components.pop();
+    setElements(components);
+  }, [board, lists]);
 
   function handleOnDragEnd(result) {
     if (!result?.destination || !result?.reason === "DROP") return;
@@ -54,18 +55,18 @@ export default function MultiTaskListContainer(props) {
     const sourceId =
       lists[result.source.droppableId].assignments[result.source.index];
 
-    const assignment = assignments[sourceId.id];
-    const from = lists[result.source.droppableId];
-    const to = lists[result.destination.droppableId];
+    // const assignment = assignments[sourceId.id];
+    // const from = lists[result.source.droppableId];
+    // const to = lists[result.destination.droppableId];
 
-    dispatch(
-      moveAssignment({
-        assignment,
-        from,
-        to,
-        destIndex: result.destination.index,
-      })
-    );
+    // dispatch(
+    //   moveAssignment({
+    //     assignment,
+    //     from,
+    //     to,
+    //     destIndex: result.destination.index,
+    //   })
+    // );
   }
 
   return (
