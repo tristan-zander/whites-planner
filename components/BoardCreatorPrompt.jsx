@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   ClickAwayListener,
@@ -9,7 +9,7 @@ import {
   TextField,
   FormControl,
   InputLabel,
-  Select,
+  Select as MuiSelect,
   MenuItem,
   Chip,
 } from "@mui/material";
@@ -18,12 +18,17 @@ import { useSelector } from "react-redux";
 import {
   Client as FaunaClient,
   Collection,
-  Collections,
   Count,
   Create,
   Documents,
+  Equals,
+  Lambda,
+  Map,
+  Var,
+  Select,
 } from "faunadb";
 import { addBoard } from "@features/boards/boardsSlice";
+import { addTaskList } from "@features/task_lists/taskListsSlice";
 
 export default function BoardCreatorPanel(props) {
   const dispatch = useDispatch();
@@ -49,13 +54,71 @@ export default function BoardCreatorPanel(props) {
     const {
       target: { value },
     } = e;
-    setListsToAdd((prevLists) => {
-      // Set to the name of the list
-      return [...prevLists, value];
+    setListsToAdd(() => {
+      return [...value];
     });
   }
 
-  function submitBoard() {
+  function getSelectedLists() {
+    if (listsToAdd.length <= 0) return null;
+
+    return listsToAdd.map((l) => lists[l].ref);
+  }
+
+  async function createDefaultLists() {
+    const defaultLists = [
+      {
+        name: "To Do",
+        assignments: null,
+      },
+      {
+        name: "Doing",
+        assignments: null,
+      },
+      {
+        name: "Done",
+        assignments: null,
+      },
+    ];
+    const fauna = new FaunaClient({
+      secret: token,
+    });
+    const lists = await fauna
+      .query(
+        Map(
+          defaultLists,
+          Lambda(
+            "x",
+            Create(Collection("TaskList"), {
+              data: {
+                owner: user.ref,
+                name: Select("name", Var("x")),
+                assignments: Select("assignments", Var("x")),
+              },
+            })
+          )
+        )
+      )
+      .catch(console.error);
+
+    if (lists == undefined) {
+      throw new Error("Could not create default lists for board.");
+    }
+
+    lists.forEach((l) => {
+      dispatch(
+        addTaskList({
+          ...l.data,
+          ref: l.ref,
+          ts: l.ts,
+        })
+      );
+    });
+
+    return lists.map((l) => l.ref);
+  }
+
+  async function submitBoard() {
     if (boardName.length <= 0) {
       console.error("Board name is empty.");
     }
@@ -68,16 +131,19 @@ export default function BoardCreatorPanel(props) {
       secret: token,
     });
 
-    const board = fauna
+    const lists =
+      listsToAdd.length > 0 ? getSelectedLists() : await createDefaultLists();
+
+    console.debug(lists);
+
+    const board = await fauna
       .query(
         Create(Collection("Board"), {
           data: {
             owner: user.ref,
             name: boardName,
-            lists: [
-              // TODO: Get the references of the selected lists.
-            ],
-            primaryBoard: Count(Documents(Collection("Board"))) == 0,
+            lists,
+            primaryBoard: Equals(Count(Documents(Collection("Board"))), 0),
           },
         })
       )
@@ -88,15 +154,11 @@ export default function BoardCreatorPanel(props) {
       return;
     }
 
-    console.debug(board);
-
     dispatch(
       addBoard({
-        board: {
-          ...board.data,
-          ref: board.ref,
-          ts: board.ts,
-        },
+        ...board.data,
+        ref: board.ref,
+        ts: board.ts,
       })
     );
 
@@ -129,7 +191,7 @@ export default function BoardCreatorPanel(props) {
             >
               Add lists
             </InputLabel>
-            <Select
+            <MuiSelect
               id="board-list-select"
               labelId="board-list-select-label"
               label="Add lists"
@@ -140,7 +202,7 @@ export default function BoardCreatorPanel(props) {
               renderValue={(selected) => (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   {selected.map((value) => (
-                    <Chip key={value} label={value} />
+                    <Chip key={value} label={lists[value].name} />
                   ))}
                 </Box>
               )}
@@ -148,13 +210,13 @@ export default function BoardCreatorPanel(props) {
               {lists !== undefined
                 ? Object.entries(lists).map(([listId, listData]) => {
                     return (
-                      <MenuItem key={listId} value={listData.name}>
+                      <MenuItem key={listId} value={listId}>
                         {listData.name}
                       </MenuItem>
                     );
                   })
                 : null}
-            </Select>
+            </MuiSelect>
           </FormControl>
         </Box>
         <Box>

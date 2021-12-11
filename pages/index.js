@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import MainBoard from "@components/MainBoard";
+import MainBoard from "@components/Board";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoginPrompt from "@components/LoginPrompt";
