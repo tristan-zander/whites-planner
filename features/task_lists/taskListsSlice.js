@@ -4,9 +4,9 @@ export const taskListsSlice = createSlice({
   name: "taskLists",
   initialState: {},
   reducers: {
-    addtaskList: (state, action) => {
-      const { ref, ts, title, assignments } = action.payload;
-      state[ref.id] = { ref, ts, title, assignments };
+    addTaskList: (state, action) => {
+      const { ref, ts, name, assignments, owner } = action.payload;
+      state[ref.id] = { ref, ts, name, assignments, owner };
     },
     deletetaskList: (state, action) => {
       const { ref } = action.payload;
@@ -34,7 +34,7 @@ export const taskListsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addtaskList, deletetaskList, updatetaskList, moveAssignment } =
+export const { addTaskList, deletetaskList, updatetaskList, moveAssignment } =
   taskListsSlice.actions;
 
 export default taskListsSlice.reducer;

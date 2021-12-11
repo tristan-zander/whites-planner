@@ -29,7 +29,7 @@ import { Dialog, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { addBoard } from "@features/boards/boardsSlice";
 import { addAssignment } from "@features/assignments/assignmentsSlice";
-import { addtaskList } from "@features/task_lists/taskListsSlice";
+import { addTaskList } from "@features/task_lists/taskListsSlice";
 
 export default function LoginPrompt(props) {
   const dispatch = useDispatch();
@@ -113,7 +113,7 @@ export default function LoginPrompt(props) {
         ref: d.ref,
         ts: d.ts,
       };
-      dispatch(addtaskList(data));
+      dispatch(addTaskList(data));
     });
   };
 

@@ -1,5 +1,5 @@
 import { Box, Divider } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -26,21 +26,25 @@ export default function MultiTaskListContainer(props) {
 
   let elements = [];
 
-  Object.values(lists).forEach((l, i) => {
-    elements.push(
-      <TaskList
-        key={l.ref.id + l.title + i.toString()}
-        title={l.title}
-        ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
-        assignmentIds={l.assignments}
-        droppableId={l.ref.id}
-      ></TaskList>
-    );
-    elements.push(
-      <Divider key={l.title + i.toString()} orientation="vertical" />
-    );
-  });
-  elements.pop();
+  useEffect(() => {
+    if (lists === undefined) return;
+    elements = [];
+    Object.values(lists).forEach((l, i) => {
+      elements.push(
+        <TaskList
+          key={l.ref.id + l.title + i.toString()}
+          title={l.title}
+          ids={[1 + 3 * i, 2 + 3 * i, 3 + 3 * i]}
+          assignmentIds={l.assignments}
+          droppableId={l.ref.id}
+        ></TaskList>
+      );
+      elements.push(
+        <Divider key={l.title + i.toString()} orientation="vertical" />
+      );
+    });
+    elements.pop();
+  }, [elements, lists]);
 
   function handleOnDragEnd(result) {
     if (!result?.destination || !result?.reason === "DROP") return;
