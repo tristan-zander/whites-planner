@@ -1,28 +1,30 @@
 import { Paper, Box, Typography, Button, IconButton } from "@mui/material";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  resetServerContext,
-} from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 import TemplateAssignment from "./TemplateAssignment";
+import { Client as FaunaClient, Collection, Create } from "faunadb";
+import { addAssignment } from "@features/assignments/assignmentsSlice";
 
 export default function TaskList({ id }) {
   const list = useSelector((state) => state.taskLists[id]);
   const assignmentData = useSelector((state) => state.assignments);
+  const token = useSelector((state) => state.context.token);
+  const user = useSelector((state) => state.context.user);
   const [assignments, setAssignments] = useState([]);
 
   const [tempAssignment, setTempAssignment] = useState(null);
 
+  const dispatch = useDispatch();
+
   async function fetchAssignments() {}
 
   useEffect(() => {
-    const assignmentsForThisList = Object.values(assignmentData).filter(
-      (a) => a.board == id
-    );
+    const assignmentsForThisList = Object.values(assignmentData).filter((a) => {
+      console.debug(a);
+      return a.list == id;
+    });
     setAssignments(assignmentsForThisList);
   }, [assignmentData, id, list]);
 
@@ -49,7 +51,56 @@ export default function TaskList({ id }) {
                   onClose={() => {
                     setTempAssignment(null);
                   }}
-                  onSubmit={console.debug}
+                  onSubmit={async (res) => {
+                    // Convert due date to database friendly version.
+                    const dueDate = res.dueDate?.toISO();
+
+                    if (!token) {
+                      throw new Error(
+                        "Cannot connect to the database. Please log in again."
+                      );
+                    }
+
+                    if (!user.ref) {
+                      throw new Error(
+                        "Data for the current user ref is not in the state."
+                      );
+                    }
+
+                    const fauna = new FaunaClient({
+                      secret: token,
+                    });
+
+                    const data = await fauna
+                      .query(
+                        Create(Collection("Assignment"), {
+                          data: {
+                            name: res.name,
+                            desc: res.description,
+                            dueDate: dueDate,
+                            owner: user.ref,
+                            list: id,
+                          },
+                        })
+                      )
+                      .catch(console.error);
+
+                    if (!data) {
+                      throw new Error("Could not add the assignment.");
+                    }
+
+                    console.debug(data);
+
+                    dispatch(
+                      addAssignment({
+                        ...data.data,
+                        ts: data.ts,
+                        ref: data.ref,
+                      })
+                    );
+
+                    setTempAssignment(null);
+                  }}
                 ></TemplateAssignment>
               );
             }
