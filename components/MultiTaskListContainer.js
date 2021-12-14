@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAssignment,
   addAssignment,
+  updateAssignment,
 } from "@features/assignments/assignmentsSlice";
 import {
   moveAssignment,
@@ -20,6 +21,7 @@ import {
 // Drag and drop list container
 export default function MultiTaskListContainer(props) {
   const listsData = useSelector((state) => state.taskLists);
+  const assignmentsData = useSelector((state) => state.assignments);
   const board = useSelector((state) => state.boards[props.id]);
 
   const dispatch = useDispatch();
@@ -52,8 +54,12 @@ export default function MultiTaskListContainer(props) {
 
     console.debug(result);
 
-    const sourceId =
-      lists[result.source.droppableId].assignments[result.source.index];
+    const assignment = assignmentsData[result.draggableId];
+    const updated = { ...assignment, list: result.destination.droppableId };
+
+    // TODO: Make sure this can be reflected in the database first.
+
+    dispatch(updateAssignment(updated));
 
     // const assignment = assignments[sourceId.id];
     // const from = lists[result.source.droppableId];
