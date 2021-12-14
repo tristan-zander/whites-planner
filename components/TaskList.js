@@ -1,4 +1,4 @@
-import { Paper, Box, Typography } from "@mui/material";
+import { Paper, Box, Typography, Button, IconButton } from "@mui/material";
 import {
   DragDropContext,
   Draggable,
@@ -7,11 +7,15 @@ import {
 } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Add } from "@mui/icons-material";
+import TemplateAssignment from "./TemplateAssignment";
 
 export default function TaskList({ id }) {
   const list = useSelector((state) => state.taskLists[id]);
   const assignmentData = useSelector((state) => state.assignments);
   const [assignments, setAssignments] = useState([]);
+
+  const [tempAssignment, setTempAssignment] = useState(null);
 
   async function fetchAssignments() {}
 
@@ -32,9 +36,28 @@ export default function TaskList({ id }) {
         m: 1,
       }}
     >
-      <Typography variant="h4" sx={{ m: 1, mt: 3 }}>
-        {list.name}
-      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <Typography variant="h4" sx={{ m: 1, mt: 3, flexGrow: 5 }}>
+          {list.name}
+        </Typography>
+        <IconButton
+          onClick={() => {
+            if (tempAssignment === null) {
+              // Create a template assignment for editing.
+              setTempAssignment(
+                <TemplateAssignment
+                  onClose={() => {
+                    setTempAssignment(null);
+                  }}
+                  onSubmit={console.debug}
+                ></TemplateAssignment>
+              );
+            }
+          }}
+        >
+          <Add />
+        </IconButton>
+      </Box>
       <Droppable
         droppableId={id}
         renderClone={(provided, snapshot, rubric) => {
@@ -52,11 +75,12 @@ export default function TaskList({ id }) {
       >
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {assignments.length > 0 ? null : (
-              <Typography>
-                Hey, you should add an assignment to this.
-              </Typography>
-            )}
+            {tempAssignment ??
+              (assignments.length > 0 ? null : (
+                <Typography>
+                  Hey, you should add an assignment to this.
+                </Typography>
+              ))}
             {assignments.map((a, i) => {
               return (
                 <Draggable key={a.ref.id} draggableId={a.ref.id} index={i}>
