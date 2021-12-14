@@ -1,4 +1,11 @@
-import { Paper, Box, Typography, Button, IconButton } from "@mui/material";
+import {
+  Paper,
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +13,7 @@ import { Add } from "@mui/icons-material";
 import TemplateAssignment from "./TemplateAssignment";
 import { Client as FaunaClient, Collection, Create } from "faunadb";
 import { addAssignment } from "@features/assignments/assignmentsSlice";
+import Assignment from "@components/Assignment";
 
 export default function TaskList({ id }) {
   const list = useSelector((state) => state.taskLists[id]);
@@ -22,7 +30,6 @@ export default function TaskList({ id }) {
 
   useEffect(() => {
     const assignmentsForThisList = Object.values(assignmentData).filter((a) => {
-      console.debug(a);
       return a.list == id;
     });
     setAssignments(assignmentsForThisList);
@@ -119,17 +126,22 @@ export default function TaskList({ id }) {
               {...provided.dragHandleProps}
               ref={provided.innerRef}
             >
-              Rendered
+              <Assignment id={rubric.draggableId} />
             </div>
           );
         }}
       >
         {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef}>
+          <Stack
+            spacing={2}
+            sx={{ h: "100%" }}
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
             {tempAssignment ??
               (assignments.length > 0 ? null : (
                 <Typography>
-                  Hey, you should add an assignment to this.
+                  Click the + button to add an assignment.
                 </Typography>
               ))}
             {assignments.map((a, i) => {
@@ -141,14 +153,14 @@ export default function TaskList({ id }) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <Paper sx={{ m: 1 }}>{a.name}</Paper>
+                      <Assignment id={a.ref.id} />
                     </div>
                   )}
                 </Draggable>
               );
             })}
             {provided.placeholder}
-          </div>
+          </Stack>
         )}
       </Droppable>
     </Box>
