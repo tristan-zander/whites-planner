@@ -12,6 +12,7 @@ import DateAdapter from "@mui/lab/AdapterLuxon";
 
 function Application({ Component, pageProps }) {
   resetServerContext();
+
   return (
     <CssBaseline>
       <ThemeProvider theme={createTheme()}>

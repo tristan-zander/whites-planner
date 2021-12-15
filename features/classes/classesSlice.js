@@ -5,22 +5,19 @@ export const classesSlice = createSlice({
   initialState: {},
   reducers: {
     addclass: (state, action) => {
-      const { ref, ts, name, color } = action.payload;
-      state[ref.id] = { ts, name, color };
+      const { ref } = action.payload;
+      state[ref.id] = action.payload;
     },
     deleteclass: (state, action) => {
       const { ref } = action.payload;
       if (!ref.id) {
         return { error: "An ID was not provided." };
       }
-      state[ref.id] = null;
+      delete state[ref.id];
     },
     updateclass: (state, action) => {
       const { ref } = action.payload;
-      const index = state.indexOf(ref);
-      if (index === -1) {
-        return { error: "Could not find Id in " };
-      }
+      state[ref.id] = action.payload;
     },
   },
 });

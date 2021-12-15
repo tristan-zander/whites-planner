@@ -5,25 +5,29 @@ export const boardsSlice = createSlice({
   initialState: {},
   reducers: {
     addBoard: (state, action) => {
-      console.debug(action.payload);
-      const { ref, ts, name, lists, owner, primaryBoard } = action.payload;
-      state[ref.id] = { ts, name, lists, owner, primaryBoard };
+      const { ref } = action.payload;
+      state[ref.id] = action.payload;
     },
     deleteBoard: (state, action) => {
       const { ref } = action.payload;
       if (!ref.id) {
         return { error: "An ID was not provided." };
       }
-      state[ref.id] = null;
+      delete state[ref.id];
     },
     updateBoard: (state, action) => {
       const { ref } = action.payload;
       state[ref.id] = action.payload;
     },
+    addListRefToBoard: (state, action) => {
+      const { ref, board } = action.payload;
+
+      state[board.ref.id].lists.push(ref);
+    },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { addBoard, deleteBoard, updateBoard } = boardsSlice.actions;
+export const { addBoard, deleteBoard, updateBoard, addListRefToBoard } =
+  boardsSlice.actions;
 
 export default boardsSlice.reducer;

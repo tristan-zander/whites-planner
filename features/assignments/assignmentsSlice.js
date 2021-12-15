@@ -5,16 +5,15 @@ export const assignmentsSlice = createSlice({
   initialState: {},
   reducers: {
     addAssignment: (state, action) => {
-      const { ref, ts, name, desc, dueDate, classId, list, board } =
-        action.payload;
-      state[ref.id] = { ref, ts, name, desc, dueDate, classId, list, board };
+      const { ref } = action.payload;
+      state[ref.id] = action.payload;
     },
     deleteAssignment: (state, action) => {
       const { ref } = action.payload;
       if (!ref.id) {
         return { error: "An ID was not provided." };
       }
-      state[ref.id] = null;
+      delete state[ref.id];
     },
     updateAssignment: (state, action) => {
       const { ref } = action.payload;

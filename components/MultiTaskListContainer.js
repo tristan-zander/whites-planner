@@ -31,6 +31,7 @@ export default function MultiTaskListContainer(props) {
 
   useEffect(() => {
     const lists = board.lists
+      .forEach(console.debug)
       .map((l) => listsData[l.value.id])
       .filter((l) => l !== undefined);
     setLists(lists);
@@ -52,27 +53,12 @@ export default function MultiTaskListContainer(props) {
   function handleOnDragEnd(result) {
     if (!result?.destination || !result?.reason === "DROP") return;
 
-    console.debug(result);
-
     const assignment = assignmentsData[result.draggableId];
     const updated = { ...assignment, list: result.destination.droppableId };
 
     // TODO: Make sure this can be reflected in the database first.
-
+    // TODO: Enforce ordering.
     dispatch(updateAssignment(updated));
-
-    // const assignment = assignments[sourceId.id];
-    // const from = lists[result.source.droppableId];
-    // const to = lists[result.destination.droppableId];
-
-    // dispatch(
-    //   moveAssignment({
-    //     assignment,
-    //     from,
-    //     to,
-    //     destIndex: result.destination.index,
-    //   })
-    // );
   }
 
   return (

@@ -6,30 +6,19 @@ import { useSelector } from "react-redux";
 import styles from "@components/LoginPrompt/LoginPrompt.module.css";
 
 import {
-  updateContext,
   addError,
   setAccessToken,
-  addFaunaClient,
   addUser,
   updateProfile,
 } from "@features/context/contextSlice";
-import {
-  Client,
-  Get,
-  Collection,
-  Documents,
-  Paginate,
-  Ref,
-  CurrentToken,
-  Call,
-  Function,
-} from "faunadb";
+import { Client, Call, Function } from "faunadb";
 
 import { Dialog, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { addBoard } from "@features/boards/boardsSlice";
 import { addAssignment } from "@features/assignments/assignmentsSlice";
 import { addTaskList } from "@features/task_lists/taskListsSlice";
+import { normalizeDbObject, normalizeRef } from "@features/normalize";
 
 export default function LoginPrompt(props) {
   const dispatch = useDispatch();
@@ -80,9 +69,7 @@ export default function LoginPrompt(props) {
 
     const userData = {
       user: {
-        ...user.data,
-        ref: user.ref,
-        ts: user.ts,
+        ...normalizeDbObject(user),
         registeredSince: user.data.registeredSince.value,
       },
     };
@@ -91,28 +78,24 @@ export default function LoginPrompt(props) {
 
     boards.data.forEach((board) => {
       const boardData = {
-        ...board.data,
-        ref: board.ref,
-        ts: board.ts,
+        ...normalizeDbObject(board),
+        lists: board.data.lists.map((l) => {
+          return normalizeRef(l);
+        }),
       };
+      console.debug(boardData);
       dispatch(addBoard(boardData));
     });
 
     assignments.data.forEach((d) => {
-      const data = {
-        ...d.data,
-        ref: d.ref,
-        ts: d.ts,
-      };
+      const data = normalizeDbObject(d);
+
       dispatch(addAssignment(data));
     });
 
     taskLists.data.forEach((d) => {
-      const data = {
-        ...d.data,
-        ref: d.ref,
-        ts: d.ts,
-      };
+      const data = normalizeDbObject(d);
+
       dispatch(addTaskList(data));
     });
   };

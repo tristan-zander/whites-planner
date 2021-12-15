@@ -16,9 +16,6 @@ export const contextSlice = createSlice({
     setAccessToken: (state, action) => {
       state.token = action.payload.token;
     },
-    addFaunaClient: (state, action) => {
-      state.fauna = action.payload.fauna;
-    },
     addUser: (state, action) => {
       state.user = action.payload.user;
     },
@@ -33,7 +30,6 @@ export const {
   updateContext,
   addError,
   setAccessToken,
-  addFaunaClient,
   addUser,
   updateProfile,
 } = contextSlice.actions;
