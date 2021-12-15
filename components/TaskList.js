@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 import TemplateAssignment from "./TemplateAssignment";
-import { Client as FaunaClient, Collection, Create } from "faunadb";
+import { Client as FaunaClient, Collection, Create, Ref } from "faunadb";
 import { addAssignment } from "@features/assignments/assignmentsSlice";
 import Assignment from "@components/Assignment";
 
@@ -85,7 +85,10 @@ export default function TaskList({ id }) {
                             name: res.name,
                             desc: res.description,
                             dueDate: dueDate,
-                            owner: user.ref,
+                            owner: Ref(
+                              Collection(user.ref.collection),
+                              user.ref.id
+                            ),
                             list: id,
                           },
                         })

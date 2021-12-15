@@ -16,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
+  Ref,
   Client as FaunaClient,
   Collection,
   Count,
@@ -91,7 +92,7 @@ export default function BoardCreatorPanel(props) {
             "x",
             Create(Collection("TaskList"), {
               data: {
-                owner: user.ref,
+                owner: Ref(Collection(user.ref.collection), user.ref.id),
                 name: Select("name", Var("x")),
                 assignments: Select("assignments", Var("x")),
               },

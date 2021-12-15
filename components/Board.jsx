@@ -67,6 +67,7 @@ export default function Board({ id, ...rest }) {
       board: board.ref.id,
     };
 
+    // TODO: Make sure these are reflected in the database.
     dispatch(addTaskList(data));
 
     dispatch(
