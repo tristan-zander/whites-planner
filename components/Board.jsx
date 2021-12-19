@@ -59,7 +59,7 @@ export default function Board({ id, ...rest }) {
     const tempId = guid();
 
     const data = {
-      name: null,
+      name: "Place name here",
       ref: { id: tempId },
       ts: null,
       owner: user.ref,
