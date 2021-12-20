@@ -1,7 +1,4 @@
-import { v4 as guid } from "uuid";
-
-import { addListRefToBoard } from "@features/boards/boardsSlice";
-import { addTaskList } from "@features/task_lists/taskListsSlice";
+import { createTaskList } from "@features/task_lists/taskListsSlice";
 import { updateAssignment } from "@features/assignments/assignmentsSlice";
 
 import { useSelector } from "react-redux";
@@ -19,6 +16,7 @@ import {
 } from "@mui/material";
 import { DragDropContext } from "react-beautiful-dnd";
 import TaskList from "@components/TaskList";
+import { undoNormalizeRef } from "@features/normalize";
 
 export default function Board({ id, ...rest }) {
   const boardData = useSelector((state) => state.boards);
@@ -56,26 +54,13 @@ export default function Board({ id, ...rest }) {
   }
 
   function handleAddList() {
-    const tempId = guid();
-
     const data = {
-      name: "Place name here",
-      ref: { id: tempId },
-      ts: null,
-      owner: user.ref,
-      tempId,
-      board: board.ref.id,
+      name: "New List",
+      owner: undoNormalizeRef(user.ref),
+      board: undoNormalizeRef(board.ref),
     };
 
-    // TODO: Make sure these are reflected in the database.
-    dispatch(addTaskList(data));
-
-    dispatch(
-      addListRefToBoard({
-        board,
-        ref: { id: tempId },
-      })
-    );
+    const res = dispatch(createTaskList(data));
   }
 
   return (

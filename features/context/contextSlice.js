@@ -8,12 +8,13 @@ export const contextSlice = createSlice({
       state = { ...state, ...action.payload };
     },
     addError: (state, action) => {
-      state.erorr = action.payload;
+      state.error = action.payload;
     },
     clearErrors: (state) => {
       state.error = null;
     },
     setAccessToken: (state, action) => {
+      sessionStorage.setItem("token", action.payload.token);
       state.token = action.payload.token;
     },
     addUser: (state, action) => {
@@ -29,6 +30,7 @@ export const contextSlice = createSlice({
 export const {
   updateContext,
   addError,
+  clearErrors,
   setAccessToken,
   addUser,
   updateProfile,

@@ -17,19 +17,20 @@ import {
   Update,
   Var,
   Ref,
+  Client as FaunaClient,
 } from "faunadb";
 import { normalizeDbObject, undoNormalizeDbObject } from "./normalize";
 
 export class DBContext {
-  static _clientID = process.env.FAUNADB_CLIENT_SECRET;
+  constructor(secret) {
+    this.fauna = new FaunaClient({
+      secret,
+    });
+  }
 
-  // Connect to redux, get the user token, setup Fauna client.
-  constructor(store) {
-    console.debug("Constructing DB Context.");
-    this.store = store;
-
-    this.unsubscribe = store.subscribe((event) => {
-      console.debug(event);
+  setSecret(secret) {
+    this.fauna = new FaunaClient({
+      secret,
     });
   }
 
@@ -81,7 +82,7 @@ export class DBContext {
         throw new Error("Collection was not provided.");
       }
       const res = await this.fauna.query(
-        Create(Collection(data.collection), data.data)
+        Create(Collection(data.collection), { data: data.data })
       );
       if (!res) {
         throw new Error(
@@ -189,8 +190,6 @@ export class DBContext {
       "Cannot delete a non-object from the database. Please serialize it first."
     );
   }
-
-  _onTokenUpdate() {}
 }
 
 export class BulkOperationError extends Error {
