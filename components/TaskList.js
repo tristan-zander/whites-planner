@@ -12,7 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 import TemplateAssignment from "./TemplateAssignment";
 import { Client as FaunaClient, Collection, Create, Ref } from "faunadb";
-import { addAssignment } from "@features/assignments/assignmentsSlice";
+import {
+  addAssignment,
+  saveNewAssignment,
+} from "@features/assignments/assignmentsSlice";
 import Assignment from "@components/Assignment";
 
 export default function TaskList({ id }) {
@@ -30,7 +33,7 @@ export default function TaskList({ id }) {
 
   useEffect(() => {
     const assignmentsForThisList = Object.values(assignmentData).filter((a) => {
-      return a.list == id;
+      return a.list.id == id;
     });
     setAssignments(assignmentsForThisList);
   }, [assignmentData, id, list]);
@@ -74,38 +77,16 @@ export default function TaskList({ id }) {
                       );
                     }
 
-                    const fauna = new FaunaClient({
-                      secret: token,
-                    });
-
-                    const data = await fauna
-                      .query(
-                        Create(Collection("Assignment"), {
-                          data: {
-                            name: res.name,
-                            desc: res.description,
-                            dueDate: dueDate,
-                            owner: Ref(
-                              Collection(user.ref.collection),
-                              user.ref.id
-                            ),
-                            list: id,
-                          },
-                        })
-                      )
-                      .catch(console.error);
-
-                    if (!data) {
-                      throw new Error("Could not add the assignment.");
-                    }
-
-                    console.debug(data);
-
                     dispatch(
-                      addAssignment({
-                        ...data.data,
-                        ts: data.ts,
-                        ref: data.ref,
+                      saveNewAssignment({
+                        name: res.name,
+                        desc: res.description,
+                        dueDate: dueDate,
+                        owner: Ref(
+                          Collection(user.ref.collection),
+                          user.ref.id
+                        ),
+                        list: list.ref,
                       })
                     );
 

@@ -39,13 +39,12 @@ export class DBContext {
   ///    data: { ...put database data here },
   ///    collection: "Collection Name"
   /// }
-  async create(data) {
-    console.debug(data);
-    if (data instanceof Array) {
+  async create(obj) {
+    if (obj instanceof Array) {
       // Treat the data as an array
       // TODO: Change to use filter.
-      const badData = data.map((d) => {
-        if (!data.collection) {
+      const badData = obj.map((d) => {
+        if (!obj.collection) {
           return { data: d, error: "No collection specified." };
         }
       });
@@ -58,7 +57,7 @@ export class DBContext {
 
       const res = await this.fauna.query(
         Map(
-          data,
+          obj,
           Lambda(
             "data",
             Create(Collection(Select("collection", Var("data"))), {
@@ -76,13 +75,13 @@ export class DBContext {
       return res.map((d) => normalizeDbObject(d));
     }
 
-    if (data instanceof Object) {
+    if (obj instanceof Object) {
       // Treat the data as a single object
-      if (!data.collection) {
+      if (!obj.collection) {
         throw new Error("Collection was not provided.");
       }
       const res = await this.fauna.query(
-        Create(Collection(data.collection), { data: data.data })
+        Create(Collection(obj.collection), { data: obj.data })
       );
       if (!res) {
         throw new Error(

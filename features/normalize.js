@@ -28,6 +28,11 @@ export function normalizeRef(ref) {
   return normalized;
 }
 
+export function faunaTimeToISO(time) {
+  // TODO: what's the right value?
+  return time.value.beepboop;
+}
+
 export function undoNormalizeDbObject(normalized) {
   const { ref, ts, owner, ...rest } = normalized;
   return {

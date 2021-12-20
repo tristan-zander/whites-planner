@@ -1,5 +1,8 @@
 import { createTaskList } from "@features/task_lists/taskListsSlice";
-import { updateAssignment } from "@features/assignments/assignmentsSlice";
+import {
+  saveUpdateAssignment,
+  updateAssignment,
+} from "@features/assignments/assignmentsSlice";
 
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -45,11 +48,13 @@ export default function Board({ id, ...rest }) {
     if (!result?.destination || !result?.reason === "DROP") return;
 
     const assignment = assignmentsData[result.draggableId];
-    const updated = { ...assignment, list: result.destination.droppableId };
+    const updated = {
+      ...assignment,
+      list: { id: result.destination.droppableId, collection: "Assignment" },
+    };
 
-    // TODO: Make sure this can be reflected in the database first.
-    // TODO: Enforce ordering.
-    dispatch(updateAssignment(updated));
+    // TODO: enforce ordering
+    dispatch(saveUpdateAssignment(updated));
   }
 
   function handleAddList() {
