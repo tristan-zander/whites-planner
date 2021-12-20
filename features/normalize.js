@@ -1,11 +1,16 @@
 import { Collection, Ref } from "faunadb";
 
 export function normalizeDbObject(obj) {
-  // TODO: Verify if this is always the way the Fauna sends refs back as JSON
+  const { ts, ref, data, ...rest } = obj;
+
+  if (rest.length > 0) {
+    console.error("Caught unexpected values.", rest);
+  }
+
   let normalized = {
-    ...obj.data,
-    ts: obj.ts,
-    ref: normalizeRef(obj.ref),
+    ...data,
+    ts,
+    ref: normalizeRef(ref),
   };
 
   if (obj.data.owner) {
@@ -24,28 +29,14 @@ export function normalizeRef(ref) {
 }
 
 export function undoNormalizeDbObject(normalized) {
-  let obj = { data: {}, ts: null, ref: {} };
-  Object.entries(normalized).forEach(([key, value]) => {
-    if (key == "ts") {
-      obj.ts = value;
-      return;
-    }
-    if (key == "ref") {
-      // The ref will stay normalized for now.
-      obj.ref = value;
-      return;
-    }
-    if (key == "owner") {
-      obj.data.owner = undoNormalizeRef(value);
-      return;
-    }
-    obj.data[key] = value;
-  });
-  return obj;
+  const { ref, ts, owner, ...rest } = normalized;
+  return {
+    data: { ...rest, owner: owner ? undoNormalizeRef(owner) : null },
+    ref: undoNormalizeRef(ref),
+    ts,
+  };
 }
 
 export function undoNormalizeRef(ref) {
-  let obj = Ref(Collection(ref.collection), ref.id);
-  console.debug(obj, obj.toJSON());
-  return obj.toJSON();
+  return Ref(Collection(ref.collection), ref.id);
 }
