@@ -29,8 +29,6 @@ export default function TaskList({ id }) {
 
   const dispatch = useDispatch();
 
-  async function fetchAssignments() {}
-
   useEffect(() => {
     const assignmentsForThisList = Object.values(assignmentData).filter((a) => {
       return a.list.id == id;

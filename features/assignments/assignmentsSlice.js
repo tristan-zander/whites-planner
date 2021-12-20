@@ -75,7 +75,7 @@ export const assignmentsSlice = createSlice({
     addAssignment: (state, action) => {
       const { ref, list, dueDate } = action.payload;
       state[ref.id] = action.payload;
-      if (list) {
+      if (list && !list.id) {
         state[ref.id].list = normalizeRef(list);
       }
       if (dueDate && typeof dueDate !== "string") {
