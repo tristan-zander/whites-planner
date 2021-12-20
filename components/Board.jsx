@@ -31,7 +31,6 @@ export default function Board({ id, ...rest }) {
   const dispatch = useDispatch();
 
   const [lists, setLists] = useState([]);
-  const [elements, setElements] = useState([]);
 
   useEffect(() => {
     if (!board.lists) return;
