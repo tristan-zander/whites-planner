@@ -18,8 +18,13 @@ import {
   Var,
   Ref,
   Client as FaunaClient,
+  Delete,
 } from "faunadb";
-import { normalizeDbObject, undoNormalizeDbObject } from "./normalize";
+import {
+  normalizeDbObject,
+  undoNormalizeDbObject,
+  normalizeRef,
+} from "./normalize";
 
 export class DBContext {
   constructor(secret) {
@@ -39,12 +44,12 @@ export class DBContext {
   ///    data: { ...put database data here },
   ///    collection: "Collection Name"
   /// }
-  async create(obj) {
-    if (obj instanceof Array) {
+  async create(data) {
+    if (data instanceof Array) {
       // Treat the data as an array
       // TODO: Change to use filter.
-      const badData = obj.map((d) => {
-        if (!obj.collection) {
+      const badData = data.map((d) => {
+        if (!data.collection) {
           return { data: d, error: "No collection specified." };
         }
       });
@@ -57,7 +62,7 @@ export class DBContext {
 
       const res = await this.fauna.query(
         Map(
-          obj,
+          data,
           Lambda(
             "data",
             Create(Collection(Select("collection", Var("data"))), {
@@ -71,24 +76,22 @@ export class DBContext {
           "Could not create object. Database returned an empty object."
         );
       }
-      console.debug(res);
-      return res.map((d) => normalizeDbObject(d));
+      return res.map(normalizeDbObject);
     }
 
-    if (obj instanceof Object) {
+    if (data instanceof Object) {
       // Treat the data as a single object
-      if (!obj.collection) {
+      if (!data.collection) {
         throw new Error("Collection was not provided.");
       }
       const res = await this.fauna.query(
-        Create(Collection(obj.collection), { data: obj.data })
+        Create(Collection(data.collection), { data: data.data })
       );
       if (!res) {
         throw new Error(
           "Could not create object. Database returned an empty object."
         );
       }
-      console.debug(res);
       return normalizeDbObject(res);
     }
 
@@ -119,7 +122,7 @@ export class DBContext {
     if (data instanceof Array) {
       // Treat the data as an array
       const badData = data.filter((d) => {
-        if (!data.ref || !data.ref.id || !data.ref.collection) {
+        if (!d.ref || !d.ref.id || !d.ref.collection) {
           return true;
         }
         return false;
@@ -176,12 +179,53 @@ export class DBContext {
     );
   }
 
+  // This only needs a normalized ref in order to work.
   async delete(data) {
     if (data instanceof Array) {
       // Treat the data as an array
+      const badData = data.filter((d) => {
+        if (!d.ref || !d.ref.id || !d.ref.collection) {
+          return true;
+        }
+        return false;
+      });
+      if (badData.length > 0) {
+        throw new BulkOperationError("Data references not provided.", badData);
+      }
+      const res = await this.fauna.query(
+        Map(
+          data,
+          Lambda(
+            "data",
+            Delete(
+              Ref(
+                Collection(Select(["ref", "collection"], Var("data"))),
+                Select(["ref", "id"], Var("data"))
+              )
+            )
+          )
+        )
+      );
+      if (!res) {
+        throw new Error(
+          "Could not delete object(s). Database returned an empty object."
+        );
+      }
+      return res.map((d) => {
+        return { ref: normalizeRef(d.ref), ts: d.ts };
+      });
     }
     if (data instanceof Object) {
       // Treat the data as a single object
+      const res = await this.fauna.query(
+        Delete(Ref(Collection(data.ref.collection), data.ref.id))
+      );
+      if (!res) {
+        throw new Error(
+          "Could not delete object. Database returned an empty object."
+        );
+      }
+      return { ref: normalizeRef(res.ref), ts: res.ts };
     }
 
     // data is not a supported type.
